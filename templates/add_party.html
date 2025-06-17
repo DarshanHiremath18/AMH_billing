@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Party</title>
+    <style>
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        input, select, textarea {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+    <script>
+        function toggleShortName() {
+            const type = document.getElementById('type').value;
+            const shortNameDiv = document.getElementById('short_name_div');
+            shortNameDiv.style.display = type === 'Buyer' ? 'block' : 'none';
+        }
+    </script>
+</head>
+<body>
+    <h2 style="text-align:center;">Add Seller / Buyer</h2>
+    <form method="POST">
+        <label for="type">Type:</label>
+        <select name="type" id="type" onchange="toggleShortName()" required>
+            <option value="Seller">Seller</option>
+            <option value="Buyer">Buyer</option>
+        </select>
+
+        <label>First Name:</label>
+        <input type="text" name="first_name" required>
+
+        <label>Middle Name:</label>
+        <input type="text" name="middle_name">
+
+        <label>Last Name:</label>
+        <input type="text" name="last_name" required>
+
+        <label>City:</label>
+        <input type="text" name="city" required>
+
+        <label>District:</label>
+        <input type="text" name="District" required>
+
+
+        <div id="short_name_div" class="hide">
+            <label>Short Name (Only for Buyer):</label>
+            <input type="text" name="short_name">
+        </div>
+
+        <label>Account Type:</label>
+        <input type="text" name="account_type">
+
+        <label>Account Head:</label>
+        <input type="text" name="account_head">
+
+        <label>Mobile Number:</label>
+        <input type="text" name="mobile_no" required>
+
+        <label>Address:</label>
+        <textarea name="address" required></textarea>
+
+        <label>Aadhar Card Number:</label>
+        <input type="text" name="aadhar_no">
+
+        <label>Bank Account Number:</label>
+        <input type="text" name="bank_account">
+
+        <label>IFSC Code:</label>
+        <input type="text" name="ifsc_code">
+
+        <label>GST Number:</label>
+        <input type="text" name="gst_no">
+
+        <button type="submit">Save Party</button>
+    </form>
+</body>
+</html>

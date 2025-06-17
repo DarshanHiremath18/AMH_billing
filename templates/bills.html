@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bill History</title>
+</head>
+<body>
+    <h2>Bill History</h2>
+    <table border="1">
+        <tr>
+            <th>Date</th>
+            <th>Farmer</th>
+            <th>City</th>
+            <th>Quantity (kg)</th>
+            <th>Rate (₹/kg)</th>
+            <th>Total (₹)</th>
+        </tr>
+        {% for bill in bills %}
+        <tr>
+            <td>{{ bill.date }}</td>
+            <td>{{ bill.farmer_name }}</td>
+            <td>{{ bill.city }}</td>
+            <td>{{ bill.quantity }}</td>
+            <td>{{ bill.rate }}</td>
+            <td>{{ bill.total }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/">← Back to Dashboard</a>
+</body>
+</html>

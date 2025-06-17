@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Bill</title>
+</head>
+<body>
+    <h2>Chilli Billing</h2>
+    <form method="POST">
+        Farmer:
+        <select name="farmer" required>
+            {% for farmer in farmers %}
+                <option value="{{ farmer._id }}">{{ farmer.name }} ({{ farmer.city }})</option>
+            {% endfor %}
+        </select><br><br>
+        Quantity (kg): <input type="number" name="quantity" step="0.01" required><br><br>
+        Rate (₹/kg): <input type="number" name="rate" step="0.01" required><br><br>
+        <button type="submit">Generate Bill</button>
+    </form>
+    <br>
+    <a href="/">← Back to Dashboard</a>
+</body>
+</html>

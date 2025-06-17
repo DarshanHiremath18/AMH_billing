@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>List Book - Add Farmer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container py-4">
+    <h2>📘 List Book - Add Farmer & Create Lot</h2>
+    <form method="POST">
+      <!-- Date -->
+      <div class="mb-3">
+        <label for="calendar_date" class="form-label">📅 Date</label>
+        <input type="date" class="form-control" name="calendar_date" id="calendar_date" required>
+      </div>
+
+      <!-- District -->
+      <div class="mb-3">
+        <label for="district" class="form-label">🏞️ District</label>
+        <input list="districtList" name="District" id="district" class="form-control" required>
+        <datalist id="districtList">
+          {% for district in District %}
+            <option value="{{ district }}">
+          {% endfor %}
+        </datalist>
+      </div>
+
+      <!-- City -->
+      <div class="mb-3">
+        <label for="city" class="form-label">🏙️ City</label>
+        <input list="cityList" name="city" id="city" class="form-control" required>
+        <datalist id="cityList"></datalist>
+      </div>
+
+      <!-- Farmer Name -->
+      <div class="mb-3">
+        <label for="name" class="form-label">👨‍🌾 Farmer Name</label>
+        <input list="nameList" name="name" id="name" class="form-control" required>
+        <datalist id="nameList"></datalist>
+      </div>
+
+      <!-- Phone -->
+      <div class="mb-3">
+        <label for="phone" class="form-label">📞 Phone</label>
+        <input type="text" class="form-control" name="phone" id="phone">
+      </div>
+
+       <div class="lot-display">
+      🧾 Current Auto-Generated Lot Number: <span id="lot_display">{{ next_lot_number }}</span>
+    </div>
+
+      <!-- Auto Lot Number -->
+      <div class="mb-3">
+        <label for="lot_number" class="form-label">🧾 Lot Number</label>
+        <input type="text" class="form-control" name="lot_number" id="lot_number" readonly value="{{ next_lot_number }}">
+      </div>
+
+      <!-- Bag Count -->
+      <div class="mb-3">
+        <label for="bag_count" class="form-label">📦 No. of Chilli Bags</label>
+        <input type="number" class="form-control" name="bag_count" id="bag_count" required min="1">
+      </div>
+
+      <!-- Checkbox: Show Weights -->
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" name="enter_weights_now" id="enter_weights_now">
+        <label class="form-check-label" for="enter_weights_now">
+          ⚖️ Enter bag weights now (if farmer is ready)?
+        </label>
+      </div>
+
+      <!-- Dynamic Bag Weight Inputs -->
+      <div class="mb-3" id="bag_weights_container" style="display:none;">
+        <label class="form-label">Bag Weights (kg)</label>
+        <div id="bag_weight_fields"></div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">➕ Add Farmer & Create Lot</button>
+    </form>
+  </div>
+
+ <script>
+    const districtInput = document.querySelector('#district');
+    const cityInput = document.querySelector('#city');
+    const nameInput = document.querySelector('#name');
+    const phoneInput = document.querySelector('#phone');
+    const cityList = document.querySelector('#cityList');
+    const nameList = document.querySelector('#nameList');
+    const bagCountInput = document.querySelector('#bag_count');
+    const weightsCheckbox = document.querySelector('#enter_weights_now');
+    const bagWeightsContainer = document.querySelector('#bag_weights_container');
+    const bagWeightFields = document.querySelector('#bag_weight_fields');
+
+    districtInput.addEventListener('input', () => {
+      const district = districtInput.value;
+      fetch('/get-cities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ district })
+      })
+      .then(res => res.json())
+      .then(data => {
+        cityList.innerHTML = '';
+        data.cities.forEach(city => {
+          const option = document.createElement('option');
+          option.value = city;
+          cityList.appendChild(option);
+        });
+      });
+
+      cityInput.value = '';
+      nameInput.value = '';
+      nameList.innerHTML = '';
+      phoneInput.value = '';
+    });
+
+    cityInput.addEventListener('input', () => {
+      const city = cityInput.value;
+      const district = districtInput.value;
+      if (city && district) {
+        fetch('/get-farmers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ city, district })
+        })
+        .then(res => res.json())
+        .then(data => {
+          nameList.innerHTML = '';
+          data.farmers.forEach(farmer => {
+            const option = document.createElement('option');
+            option.value = farmer.name;
+            option.dataset.phone = farmer.phone;
+            nameList.appendChild(option);
+          });
+        });
+
+        nameInput.value = '';
+        phoneInput.value = '';
+      }
+    });
+
+    nameInput.addEventListener('input', () => {
+      const selected = [...nameList.options].find(o => o.value === nameInput.value);
+      phoneInput.value = selected ? selected.dataset.phone : '';
+    });
+
+    // Enter Weights Checkbox
+    weightsCheckbox.addEventListener('change', () => {
+      const count = parseInt(bagCountInput.value) || 0;
+      bagWeightFields.innerHTML = '';
+
+      if (weightsCheckbox.checked && count > 0) {
+        bagWeightsContainer.style.display = 'block';
+
+        for (let i = 0; i < count; i++) {
+          const input = document.createElement('input');
+          input.type = 'number';
+          input.step = '0.01';
+          input.name = `bag_weight_${i}`;
+          input.placeholder = `Bag ${i + 1} weight (kg)`;
+          input.className = 'form-control mb-2';
+          input.setAttribute('data-index', i);
+
+          // Add enter key behavior
+          input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              const nextInput = bagWeightFields.querySelector(`input[data-index="${i + 1}"]`);
+              if (nextInput) nextInput.focus();
+            }
+          });
+
+          bagWeightFields.appendChild(input);
+        }
+      } else {
+        bagWeightsContainer.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
