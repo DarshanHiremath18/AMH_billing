@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 from datetime import datetime
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://localhost:27017/chilli_shop"
+app.config["MONGO_URI"] = "mongodb+srv://Darshan:Dah123@cluster0.s1rmloi.mongodb.net/chilli_shop?retryWrites=true&w=majority&appName=Cluster0"
 mongo = PyMongo(app)
 
 # Home Page
