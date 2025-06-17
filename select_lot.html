@@ -1,0 +1,26 @@
+<!-- templates/select_lot.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Select Lot</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container py-4">
+  <h2>Select a Lot</h2>
+  <ul class="list-group">
+    {% for lot in lots %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      Lot No: {{ lot.lot_no }}
+      {% if action == 'set_rate' %}
+        <a href="/set-rate/{{ lot._id }}" class="btn btn-sm btn-warning">Set Rate</a>
+      {% elif action == 'preview' %}
+        <a href="/bill/{{ lot._id }}" class="btn btn-sm btn-info">Preview Bill</a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  <a href="/" class="btn btn-secondary mt-3">Back</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bill Preview</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container py-4">
+    <h2>Bill Preview for Lot {{ lot.lot_no }}</h2>
+    <table class="table table-bordered">
+      <tr><th>Farmer Name</th><td>{{ lot.name }}</td></tr>
+      <tr><th>City</th><td>{{ lot.city }}</td></tr>
+      <tr><th>Phone</th><td>{{ lot.phone }}</td></tr>
+      <tr><th>Rate per 100kg</th><td>&#8377;{{ lot.rate_per_100kg }}</td></tr>
+      <tr><th>Total Bags</th><td>{{ lot.bag_weights|length }}</td></tr>
+      <tr><th>Total Weight</th><td>{{ total_weight }} kg</td></tr>
+      <tr><th>Total Amount</th><td><strong>&#8377;{{ total_amount }}</strong></td></tr>
+    </table>
+    <a href="/" class="btn btn-success">Back to Dashboard</a>
+  </div>
+</body>
+</html>
